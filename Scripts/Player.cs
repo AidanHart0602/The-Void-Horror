@@ -4,18 +4,23 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private UIManager _uiManager;
     [SerializeField] private Transform _camera;
     [SerializeField] private float _speed = 5;
+    private bool _gameOver = false;
     // Start is called before the first frame update
     void Start()
     {
-        
+        _uiManager = FindObjectOfType<UIManager>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        PlayerMovement();
+        if (_gameOver == false) 
+        {
+            PlayerMovement();
+        }
     }
 
     void PlayerMovement()
@@ -32,5 +37,14 @@ public class Player : MonoBehaviour
         playerDirection.Normalize();
 
         transform.Translate(playerDirection * _speed  * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Death"))
+        {
+            _uiManager.GameOver();
+            _gameOver = true;
+        }
     }
 }
